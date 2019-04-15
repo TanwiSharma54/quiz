@@ -60,7 +60,7 @@
                         <div class="col-md-9">
                             <input type="text" class="class-control" [(ngModel)]="question.name" /> </div>
                         <div class="col-md-3">
-                            <button class="btn btn-link text-danger">Remove</button>
+                            <button class="btn btn-link text-danger" (click)="removeQuestion(question)">Remove</button>
                             <br>
                             <br>
                         </div>
