@@ -7,7 +7,7 @@ interface QuizDisplay {
   questions: QuestionDisplay[];
 }
 interface QuestionDisplay {
-  question: string;
+  questionText: string;
 
 }
 
@@ -44,20 +44,14 @@ export class AppComponent implements OnInit{
     this.selectedQuiz.questions = 
     this.selectedQuiz.questions.filter(x => x !== questionToRemove);
   }
-  questions: QuestionDisplay[] = [];
-  selectedQuestion: QuestionDisplay= undefined;
-  selectQuestion(quest: QuestionDisplay) {
-    this.selectedQuestion =quest;
-  }
+ 
   addNewQuestion() {
-    const newQuest:  QuestionDisplay = {
-      question: "Enter your Question"
-    };
-    this.questions = [
-      ...this.questions
-      , newQuest
+    this.selectedQuiz.questions= [
+      ...this.selectedQuiz.questions
+      , {
+        questionText: "New Question"
+      }
     ];
-    this.selectedQuestion = newQuest;
   }
 
   ngOnInit() {
