@@ -4,6 +4,11 @@ import { QuizService } from './quiz.service';
 interface QuizDisplay {
   name: string;
   numberOfQuestions: number;
+  questions: QuestionDisplay[];
+}
+interface QuestionDisplay {
+  question: string;
+
 }
 
 @Component({
@@ -26,6 +31,7 @@ export class AppComponent implements OnInit{
     const newQuiz: QuizDisplay = {
       name: "untitled Quiz"
       ,numberOfQuestions: 0
+      ,questions: []
     };
     //create a new quiz list with new quiz
     this.quizes = [
@@ -33,6 +39,21 @@ export class AppComponent implements OnInit{
       , newQuiz
     ];
     this.selectedQuiz = newQuiz;
+  }
+  questions: QuestionDisplay[] = [];
+  selectedQuestion: QuestionDisplay= undefined;
+  selectQuestion(quest: QuestionDisplay) {
+    this.selectedQuestion =quest;
+  }
+  addNewQuestion() {
+    const newQuest:  QuestionDisplay = {
+      question: "Enter your Question"
+    };
+    this.questions = [
+      ...this.questions
+      , newQuest
+    ];
+    this.selectedQuestion = newQuest;
   }
 
   ngOnInit() {
@@ -47,6 +68,7 @@ export class AppComponent implements OnInit{
           ({
             name: x.name
             ,numberOfQuestions: x.numberQuestions
+            , questions: x.questions
           }));
       }
       ,(error) => {

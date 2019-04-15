@@ -22,7 +22,7 @@
                 <a [class.active]="q === selectedQuiz" (click)="selectQuiz(q)" href="#" *ngFor="let q of quizes" class="list-group-item list-item-group-action d-flex justify-content-between align-items-center">
                     {{q.name}}
                     <span class="badge badge-secondary"
-                    [class.bg-danger]="q.numberOfQuestions === 0">{{q.numberOfQuestions}}</span>
+                    [class.bg-danger]="q.questions.length === 0">{{q.questions.length}}</span>
                 </a>
             </div>
         </div>
@@ -49,7 +49,24 @@
             <br>
             <div class="card">
                 <div class="card-header">Questions</div>
-                <div class="card-body">Coming Soon</div>
+                <div class="card-body">
+                    <br>
+                    <button (click)="addNewQuestion()" class="btn btn-outline-primary">
+                                Add New Question
+                            </button>
+                    <br>
+                    <br>
+                    <div class="row" *ngFor="let question of selectedQuiz.questions">
+                        <div class="col-md-9">
+                            <input type="text" class="class-control" [(ngModel)]="question.name" /> </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-link text-danger">Remove</button>
+                            <br>
+                            <br>
+                        </div>
+                    </div>
+
+                </div>
             </div>
             <br>
             <div class="card">
