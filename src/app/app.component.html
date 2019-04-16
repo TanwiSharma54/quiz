@@ -16,6 +16,15 @@
             <br>
             <button (click)="addNewQiz()" class="btn btn-outline-primary">
             Add New Quiz</button>
+            <button (click)="promisesOne()" class="btn btn-outline-primary">
+                    Promise 1
+                </button>
+            <button (click)="promisesTwo()" class="btn btn-outline-primary">
+                        Promise 2
+                    </button>
+            <button (click)="promisesThree()" class="btn btn-outline-primary">
+                            promise 3
+                        </button>
             <br>
             <br>
             <div class="list-group">
@@ -54,6 +63,7 @@
                     <button (click)="addNewQuestion()" class="btn btn-outline-primary">
                                 Add New Question
                             </button>
+
                     <br>
                     <br>
                     <div class="row" *ngFor="let question of selectedQuiz.questions">

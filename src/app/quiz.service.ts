@@ -14,4 +14,10 @@ export class QuizService {
       ,{name: 'quiz 2', numberQuestions: 0} 
     ]; */
   }
+  getNumberPromise(doYouWantmeToSucceed: boolean): Promise<number> {
+    let p = new Promise<number>(
+      (resolve, reject) => doYouWantmeToSucceed ? resolve(42) : reject("you got problem!")
+    );
+    return p;
+  }
 }
