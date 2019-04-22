@@ -82,7 +82,16 @@
             <div class="card">
                 <div class="card-header">Other</div>
                 <div class="card-body">
-                    <button class="btn btn-outline-danger">Delete this QUIZ</button>
+                    <div>
+                        <label class="form-check-label text-danger">
+                                    <input type="checkbox" class="form-check-input"
+                                    [(ngModel)]="selectedQuiz.markedForDelete"
+                                    />
+                                    
+                        Mark For Delete</label>
+                    </div>
+
+                    <!--<button class="btn btn-outline-danger">Delete this QUIZ</button>-->
                     <br>
                     <br/>
                     <ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-0">
@@ -107,6 +116,7 @@
                             </ng-template>
                         </ngb-panel>
                     </ngb-accordion>
+                    <br/>
                 </div>
             </div>
         </div>
