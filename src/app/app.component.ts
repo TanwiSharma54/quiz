@@ -33,7 +33,7 @@ export class AppComponent implements OnInit{
       name: "untitled Quiz"
       ,numberOfQuestions: 0
       ,questions: []
-      , markedForDelete: true
+      , markedForDelete: false
     };
     //create a new quiz list with new quiz
     this.quizes = [
@@ -69,7 +69,7 @@ export class AppComponent implements OnInit{
             name: x.name
             ,numberOfQuestions: x.numberQuestions
             , questions: x.questions
-            , markedForDelete: true
+            , markedForDelete: false
           }));
       }
       ,(error) => {
@@ -77,6 +77,12 @@ export class AppComponent implements OnInit{
       }
     );
   };
+  get mumberOfDeletedQuizzes() {
+    return this.quizes.filter(x => x.markedForDelete).length;
+  }
+  get numberOfEditedQuizzes() {
+    
+  }
   title = 'quiz-editor';
   myWidth = 250;
 

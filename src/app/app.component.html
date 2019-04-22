@@ -45,8 +45,15 @@
         </div>
         <div class="col-md-8" *ngIf="selectedQuiz">
             <br/>
-            <button class="btn btn-outline-success">Save</button>
+            <button class="btn btn-outline-success">Save
+                <span 
+                class="badge badge-danger m1-1"
+                *ngIf="!numberOfDeletedQuizzes > 0"
+                >-{{numberOfDeletedQuizzes}}
+                </span>
+            </button>
             <button class="btn btn-outline-link">Cancel</button>
+
             <br>
             <br>
             <div class="card">
