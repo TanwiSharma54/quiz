@@ -81,7 +81,7 @@ export class AppComponent implements OnInit{
     return this.quizes.filter(x => x.markedForDelete).length;
   }
   get numberOfEditedQuizzes() {
-    
+    return this.quizes.filter(x => x.markedForDelete).length;
   }
   title = 'quiz-editor';
   myWidth = 250;
