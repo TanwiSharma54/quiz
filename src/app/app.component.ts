@@ -3,13 +3,16 @@ import { QuizService } from './quiz.service';
 
 interface QuizDisplay {
   name: string;
-  numberOfQuestions: number;
+  originalName: string;
+
   questions: QuestionDisplay[];
+  questionsChecksum: string;
+  
   markedForDelete: boolean;
 }
-interface QuestionDisplay {
-  questionText: string;
 
+interface QuestionDisplay {
+  name: string;
 }
 
 @Component({
@@ -17,130 +20,210 @@ interface QuestionDisplay {
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
+
   constructor(private qSvc: QuizService) {
-    //use the quiz service here but if it fails, the
-    //creation of the component fails.
+    // Use the quiz service here, but... If it fails, the creation
+    // of the component fails : - (
   }
 
-  quizes: QuizDisplay[] = [];
-  selectedQuiz: QuizDisplay= undefined;
+  quizzes: QuizDisplay[] = [];
+  selectedQuiz: QuizDisplay = undefined;
+
   selectQuiz(q: QuizDisplay) {
-    this.selectedQuiz =q;
+    this.selectedQuiz = q;
   }
-  addNewQiz() {
+
+  addNewQuiz() {
+
+    // Create the new quiz.
     const newQuiz: QuizDisplay = {
-      name: "untitled Quiz"
-      ,numberOfQuestions: 0
-      ,questions: []
+      name: "Untitled Quiz"
+      , originalName: "Untitled Quiz"
+      , questions: []
+      , questionsChecksum: ""
       , markedForDelete: false
     };
-    //create a new quiz list with new quiz
-    this.quizes = [
-      ...this.quizes
+
+    // Create a new quiz list with the new quiz...
+    //
+    // a.k.a. "Add the new quiz to the list"
+    this.quizzes = [
+      ...this.quizzes
       , newQuiz
     ];
-    this.selectedQuiz = newQuiz;
+
+    // Select the newly added quiz.
+    this.selectedQuiz = newQuiz; 
   }
+
   removeQuestion(questionToRemove) {
-    this.selectedQuiz.questions = 
-    this.selectedQuiz.questions.filter(x => x !== questionToRemove);
+    this.selectedQuiz.questions = this.selectedQuiz.questions
+      .filter(x => x !== questionToRemove);
   }
- 
+  
   addNewQuestion() {
-    this.selectedQuiz.questions= [
+    this.selectedQuiz.questions = [
       ...this.selectedQuiz.questions
       , {
-        questionText: "New Question"
+        name: "New Untitled Question"
       }
     ];
   }
 
+  serviceDown = false;
+
   ngOnInit() {
-    //console.log(this.qSvc.getQuizes());
-    /*this.quizes = this.qSvc.getQuizes().map(x => ({
+    this.loadAllQuizzes();
+  }
+
+  private loadAllQuizzes() {
+    this.qSvc.getQuizzes().subscribe((data) => {
+      console.log(data);
+      this.quizzes = (<any[]>data).map(x => ({
+        name: x.name,
+        originalName: x.name,
+        questions: x.questions,
+        questionsChecksum: x.questions.map(x => x.name).join('~'),
+        markedForDelete: false
+      }));
+    }, (error) => {
+      console.log(error);
+      this.serviceDown = true;
+    });
+  }
+
+  saveBatchEdits() {
+    
+    const editedQuizzes = this.getEditedQuizzes().map(x => ({
       name: x.name
-      ,numberOfQuestions: x.numberQuestion
-    })); */
-    this.qSvc.getQuizes().subscribe(
-      (data) => {
-        this.quizes = (<any[]> data).map(x => 
-          ({
-            name: x.name
-            ,numberOfQuestions: x.numberQuestions
-            , questions: x.questions
-            , markedForDelete: false
-          }));
-      }
-      ,(error) => {
-        console.log(error);
-      }
+      , originalName: x.name
+      , questions: x.questions
+    }));
+    
+    const addedQuizzes = this.getAddedQuizzes().map(x => ({
+      name: x.name
+      , questions: x.questions
+    }));
+
+    this.qSvc.saveQuizzes(editedQuizzes, addedQuizzes).subscribe(
+      numberOfChangedQuizzesSuccessfullySaved => console.log(numberOfChangedQuizzesSuccessfullySaved)
+      , error => console.log(error)
     );
-  };
-  get mumberOfDeletedQuizzes() {
-    return this.quizes.filter(x => x.markedForDelete).length;
   }
+
+  cancelBatchEdits() {
+    this.loadAllQuizzes();
+    this.selectQuiz(undefined);
+  }
+
+  get numberOfDeletedQuizzes() {
+    return this.quizzes.filter(x => x.markedForDelete).length;
+  }
+
   get numberOfEditedQuizzes() {
-    return this.quizes.filter(x => x.markedForDelete).length;
+    return this.getEditedQuizzes().length;
   }
+
+  getEditedQuizzes() {
+    return this.quizzes
+    .filter(x =>
+      (!x.markedForDelete && x.originalName != "Untitled Quiz")
+      && (x.name !== x.originalName || x.questionsChecksum !== x.questions.map(x => x.name).join('~'))
+    );
+  }
+  getAddedQuizzes() {
+    return this.quizzes
+    .filter(x =>
+      (!x.markedForDelete && x.originalName != "Untitled Quiz")
+      && (x.name !== x.originalName || x.questionsChecksum !== x.questions.map(x => x.name).join('~'))
+    );
+  }
+
+
+  get numberOfAddedQuizzes() {
+    return this.quizzes.filter(x => !x.markedForDelete && x.originalName === "Untitled Quiz").length;
+  }
+
   title = 'quiz-editor';
   myWidth = 250;
 
-  makeImageLarger(){
-    this.myWidth *=1.3;
+  makeImageLarger() {
+    this.myWidth *= 1.3;
   }
-  //Read only #get Property
+
+  // Read-only/getter property..
   get titleColor() {
     return this.myWidth > 400 ? "red" : "blue";
   }
+
   promisesOne() {
     const n = this.qSvc.getNumberPromise(true);
-    console.log(n);
+    console.log(n); // ???
+
     n.then(
       number => {
         console.log(".then");
-        console.log(number);
+        console.log(number); // ???
+
         const anotherNumberPromise = this.qSvc.getNumberPromise(false);
-        console.log(anotherNumberPromise);
+        console.log(anotherNumberPromise); // ??? // ZoneAwarePromise
+
         anotherNumberPromise.then(
           number => console.log(number)
         ).catch(
           error => console.log(error)
-        )
+        );
+
       }
     ).catch(
       error => {
         console.log(".catch")
         console.log(error) 
       }
-
     );
   }
-  async promisesTwo() {
+
+  async promiseTwo() {
+
     try {
       const n1 = await this.qSvc.getNumberPromise(true);
-      console.log(n1);
-      const n2 = this.qSvc.getNumberPromise(false);
+      console.log(n1); // ??? // 42
+
+      const n2 = await this.qSvc.getNumberPromise(false);
       console.log(n2);
-    }catch(error) {
-      console.log("Promise2 catch");
+    }
+
+    catch(error) {
+      console.log("catch block");
       console.log(error);
     }
   }
-  async promisesThree() {
-    //parlor trick for concurrent promise execution
+
+  async promiseThree() {
+    // Parlor trick for concurrent promise execution...
+
     try {
       const n1 = this.qSvc.getNumberPromise(true);
-      console.log(n1);
+      console.log(n1); // ???
 
       const n2 = this.qSvc.getNumberPromise(true);
-      console.log(n2);
+      console.log(n2); // ???
+
       const results = await Promise.all([n1, n2]);
       //const results = await Promise.race([n1, n2]);
-      console.log(results)
-    }catch(error) {
+      console.log(results);
+    }
+    catch(error) {
       console.log(error);
     }
-    
+  }
+
+  /*async*/ testAsyncKeyword() {
+
+    // await is a valid variable name...
+    // unless it is an async method ! ! !
+    //let await = 0;
+
   }
 }
