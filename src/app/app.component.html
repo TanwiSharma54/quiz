@@ -39,7 +39,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-8" *ngIf="selectedQuiz">
+        <div class="col-md-8" *ngIf="selectedQuiz" [@detailsFromLeft]="detailsAnimationState" (@detailsFromLeft.done)="detailsFromLeftAnimationComplete()">
             <br>
             <button class="btn" (click)="saveBatchEdits()" [class.btn-outline-dark]="numberOfDeletedQuizzes + numberOfAddedQuizzes + numberOfEditedQuizzes === 0" [class.btn-dark]="numberOfDeletedQuizzes + numberOfAddedQuizzes + numberOfEditedQuizzes > 0">
           Save Quizzes
