@@ -135,8 +135,8 @@ export class AppComponent implements OnInit {
     }));
     
     const addedQuizzes = this.getAddedQuizzes().map(x => ({
-      name: x.name
-      , questions: x.questions
+      quizName: x.name
+      , quizQuestions: x.questions.map(y => y.name)
     }));
 
     this.qSvc.saveQuizzes(editedQuizzes, addedQuizzes).subscribe(
@@ -165,17 +165,14 @@ export class AppComponent implements OnInit {
       && (x.name !== x.originalName || x.questionsChecksum !== x.questions.map(x => x.name).join('~'))
     );
   }
+ 
+
+
   getAddedQuizzes() {
-    return this.quizzes
-    .filter(x =>
-      (!x.markedForDelete && x.originalName != "Untitled Quiz")
-      && (x.name !== x.originalName || x.questionsChecksum !== x.questions.map(x => x.name).join('~'))
-    );
+    return this.quizzes.filter(x => !x.markedForDelete && x.originalName === "Untitled Quiz");
   }
-
-
   get numberOfAddedQuizzes() {
-    return this.quizzes.filter(x => !x.markedForDelete && x.originalName === "Untitled Quiz").length;
+    return this.getAddedQuizzes().length;
   }
 
   title = 'quiz-editor';
